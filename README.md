@@ -1,22 +1,24 @@
-# Дамп трафика с нескольких Linux хостов
+Welcome to the GitHub of the SberMarket development team (service formerly known as [Instamart](https://github.com/nstmrt)). We are currently working on creating the leading service on the Russian e-shopping market. The service includes 3 applications, a website, 200 micro-services, as well as a PaaS, and is intended to cope with high traffic loads.
 
-Инструмент предназначен для возможности снимать dump трафика с нескольких Linux-хостов в реальном времени одновременно через ssh и получать их в одном окне Wireshark. Для этого используется конвертация в формат pcapng посредством dumpcap(часть пакета Wireshark, не требуется доустанавливать).
+
+# Traffic dump from several Linux hosts
+
+The given tool is designed to simultaneously dump traffic from multiple Linux hosts in real time via SSH and receive the incoming flow through a single Wireshark window. Conversion into the pcapng format is done using dumpcap (part of the Wireshark package, with no additional installation required).
 
 ## Installation
 ---
-Для компиляции или запуска нужен Golang. Можно просто запустить:
+Golang is needed to compile or run the application through:
 ```
 go run multipleDump.go
 ```
-Или скомпилировать. Для удобства компиляции можно использовать скрипт build_win_linux_macos.sh. Далее для работы использовать бинарный файл и конфиг hosts.conf. **Версия Wireshark при этом должна быть не менее 3.6**.
+The application can also be compiled. For ease of compilation, you can use the build_win_linux_macos.sh script. Next, use the binary file and the hosts.conf config. **Wireshark version 3.6 or higher is required to run.**
 
-## Примеры конфигурации
+## Examples of configuration
 ---
 
-В файле hosts.conf в формате json находится конфиг. Содержит пути для бинарников Wireshark в разных ОС(Windows, MacOS, для Linux путь не нужен).
+The hosts.conf file contains the config in json format. It also contains paths for Wireshark binaries in different operating systems like Windows and MacOS. No path is needed for Linux.
 
- Далее массив элементов каждый из которых представляет собой набор настроек для доступа по SSH на один Linux-хост, а так же параметры запуска tcpdump на удаленном хосте.
-Пример одного элемента
+The following is a selection of elements, each representing settings for access via SSH to one Linux host, as well as parameters for running tcpdump on a remote host. Example of an element:
 
 ```
       {
@@ -28,11 +30,11 @@ go run multipleDump.go
          "Timeout":"100"
       }
 ```
-Все настройки в том формате в которых их ожидает стандартный ssh-клиент и tcpdump. То есть поля UserHost, HostPort, Key это ключи которые необходимо передать стандартному ssh-клиенту на вашей рабочей машине чтобы зайти на удаленный хост. Если какой то из параметров вам не нужен то заменяем его значение на пробел.
-PcapFilter, Interface - параметры для запуска tcpdump на удаленном хосте.
+All the settings are in the format required by the standard SSH client and tcpdump. The UserHost, HostPort, and Key fields are the keys that must be granted to the standard SSH client on the master device in order to log into a remote host. In case any of the parameters is redundant, replace it with a space value.
+The PcapFilter and Interface are the parameters needed for running tcpdump on a remote host.
 
-**В параметрах ssh можно писать разные конструкции имея ввиду что это всего лишь параметры для команды ssh.** То есть если такой параметр примет ssh, то и в конфиг его можно вставлять в таком же формате.
-Пример:
+**Different values can be entered in the SSH parameters, as they are intended for the SSH command.** Any parameter can be entered into the config in the same format if the SSH accepts it.
+For example:
 ```
       {   "UserHost":"-J user.my@10.2.2.2 user.my@10.10.10.10",
           "HostPort":"-p 22",
@@ -44,7 +46,7 @@ PcapFilter, Interface - параметры для запуска tcpdump на у
 ```
 
 
-**Следующий пример.** Если у вас параметры подключения к хосту расписаны в конфиге ssh-клиента(например для unix-like os это в ~/.ssh/config) например так:
+If your connection parameters to the host are specified in the SSH client config (in ~/.ssh/config for unix-like os) as follows:
 
 ```
 Host JumpHost
@@ -59,7 +61,7 @@ Host host1
   User user.my
 ```
 
-и вам надо снять дамп с хоста host1, то в конфиге в параметре UserHost пишем просто название хоста из конфига ssh. То есть:
+and you need to receive a dump from host1, then simply input the name of the host from the SSH config in the config UserHost parameter. For example:
 
 ```
       {
@@ -71,26 +73,26 @@ Host host1
           "Timeout":"100"
       }
 ```
-В параметры HostPort и Key вставляем пробелы.
+Insert space values into the HostPort and Key parameters.
 
-## Параметры
+## Parameters
 ---
 
-**UserHost** - пользователь@хост (параметр ssh)
+**UserHost** - user@host (SSH parameter).
 
-**HostPort** - параметр ssh для указания порта(обязательно с -p. Параметр ssh)
+**HostPort** - SSH parameter for specifying the port (mandatory with -p. SSH parameter).
 
-**Key** - путь к закрытому ключу по которому Linux-хост нас пускает(обязательно с -i. Параметр ssh)
+**Key** - path to the private key that the Linux host uses to grant access (mandatory with -i. SSH parameter).
 
-**Interface** - имя интерфейса с которого снимается дамп(это параметр команды tcpdump на удаленном хосте)
+**Interface** - the name of the interface that is transferring the dump (this is a parameter of the tcpdump command on the remote host).
 
-**PcapFilter** - фильтр который передается команде tcpdump
+**PcapFilter** - - the filter that is passed to the tcpdump command.
 
-**Timeout** - для безопасности на удаленном хосте tcpdump запускается с командой timeout, чтобы в случае каких то поломок/отвалов подключения он не остался висеть в процессах вечно. Можно поставить и 0, но надо понимать этот риск.
+**Timeout** - tcpdump is launched with the timeout command for security on the remote host to make sure that it does not experience timeout and does not stall on certain processes in case of errors/connection failures. The parameter can be set to 0, however this action entails certain risks.
 
-## Запуск бинарного файла 
+## Running a binary file
 ---
-MAC(после компиляции):
+MAC(after compilation):
 ```
  ./multipleDump.bin.Macos
 ```
@@ -103,4 +105,4 @@ Linux:
 ./multipleDump.bin.Linux
 ```
 
-Wireshark запустится автоматически, для чего в начале конфига указаны пути до его бинарных файлов. В пути для бинарника не вашей операционной системы можно поставить просто пробел.
+Wireshark will run automatically, since the paths to its binary files are stated in the header of the config. The path to a binary that does not correspond to your operating system can be replaced with a space value.
