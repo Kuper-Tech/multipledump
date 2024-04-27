@@ -1,6 +1,3 @@
-Welcome to the GitHub of the SberMarket development team (service formerly known as [Instamart](https://github.com/nstmrt)). We are currently working on creating the leading service on the Russian e-shopping market. The service includes 3 applications, a website, 200 micro-services, as well as a PaaS, and is intended to cope with high traffic loads.
-
-
 # Traffic dump from several Linux hosts
 
 The given tool is designed to simultaneously dump traffic from multiple Linux hosts in real time via SSH and receive the incoming flow through a single Wireshark window. Conversion into the pcapng format is done using dumpcap (part of the Wireshark package, with no additional installation required).
