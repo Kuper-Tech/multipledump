@@ -1,5 +1,7 @@
 # Traffic dump from several Linux hosts
 
+<img width="auto" height="120" alt="logo" src="https://github.com/SberMarket-Tech/multipledump/assets/78420536/fec708fe-8090-4925-9034-9c9b0f55dea4" align="right" />
+
 The given tool is designed to simultaneously dump traffic from multiple Linux hosts in real time via SSH and receive the incoming flow through a single Wireshark window. Conversion into the pcapng format is done using dumpcap (part of the Wireshark package, with no additional installation required).
 
 ## Installation
